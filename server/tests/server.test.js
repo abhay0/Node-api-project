@@ -4,7 +4,7 @@ const request = require('supertest');
 const {app} = require('../server');
 const {ToDo} = require('../models/todo')
 
-const todos = [{
+const beforetodos = [{
     text: 'First Test'
 }, {
     text: 'Second Test'
@@ -13,12 +13,9 @@ const todos = [{
 //before executing this i want to make sure todo db is blank so i use beforeeach
 
 beforeEach((done) => {
-    ToDo.remove({}).then(() => {
-        // done();
-        return ToDo.insertMany(todos);
-    })
-    .then(()=> done());
+    ToDo.remove({}).then(() => ToDo.insertMany(beforetodos)).then(()=> done());
 });
+
 
 describe('POST /todos', () => {
     it('Should create a new todo function ', (done) => {
@@ -58,7 +55,9 @@ describe('POST /todos', () => {
                         }).catch((e) => done(e));
                     })
     })
+})
 
+describe('GET /todos', () => {
     it('Should be return the todo', (done) => {
         request(app)
                 .get('/todos')

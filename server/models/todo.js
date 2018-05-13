@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const ToDo = mongoose.model('ToDo', {
     text: {
         type: String,
-        require: true,
+        required: true,
         trim: true,
         minlength: 1
     },

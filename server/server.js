@@ -12,9 +12,7 @@ app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
     let newTodo = new ToDo({
-        text: req.body.name,
-        completed: req.body.completed,
-        completedAt: req.body.completedAt
+        text: req.body.text
     });
 
     newTodo.save().then(
@@ -24,3 +22,5 @@ app.post('/todos', (req, res) => {
 })
 
 app.listen(4000, () => console.log(`server started at 4000 port`))
+
+module.exports = {app}

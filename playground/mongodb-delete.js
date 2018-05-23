@@ -8,13 +8,20 @@ MongoClient.connect('mongodb://localhost:27017/ToDoApp', (err, client) => {
     const db = client.db('ToDoApp');
 
     //delete Many
+
     db.collection('ToDo').deleteMany({text: 'Walk the dog'}).then(
-        (result) => {
-              console.log(`result: ${result}`)
-        },
-        (err) => {
-            console.log(`Error: ${err}`)
-        }
+        (result) => console.log(`result: ${result}`),
+        (err) => console.log(`Error: ${err}`)
+    )
+        //delete One
+        db.collection('ToDo').deleteOne({text: 'Walk the dog'}).then(
+            (result) => console.log(`result: ${result}`),
+            (err) => console.log(`Error: ${err}`)
+        )
+    //delete Many
+    db.collection('ToDo').findOneAndDelete({text: 'Walk the dog'}).then(
+        (result) => console.log(`result: ${result}`),
+        (err) => console.log(`Error: ${err}`)
     )
     // client.close();
 });

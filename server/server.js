@@ -49,6 +49,23 @@ app.get('/todos/:id', (req, res) => {
     }
 })
 
+app.delete('/todos/:id', (req, res) => {
+    const id = req.params.id;
+    if(ObjectId.isValid(id)){
+        ToDo.findByIdAndRemove(id).then(
+            (result) => {
+                if(!result){
+                    return res.status(404).send("no result")
+                }
+                res.status(200).send({result})
+            },
+            (error) => res.status(404).send("error in deleting")
+        ).catch((e) => res.status(400).send(e))
+    }else{
+        res.status(404).send("Invalid id")
+    }
+})
+
 app.listen(port, () => console.log(`server is running at port ${port}`))
 
 module.exports = {app}

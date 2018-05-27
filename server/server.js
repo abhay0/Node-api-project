@@ -20,6 +20,7 @@ const _ = require('lodash');
 const {mongoose} = require('./db/mongoose');
 const {ToDo} = require('./models/todo');
 const {User} = require('./models/users');
+const {authenticate} = require('./middleware/authenticate')
 
 const port = process.env.PORT || 3002;
 
@@ -108,14 +109,13 @@ app.post('/users', (req, res) => {
     const body = _.pick(req.body, ['email', 'password'])
     const user = new User(body);
 
-    user.save().then(() => {
-            return user.generateAuthToken();
-        }
-    ).then(
-        (token) => {
-            res.header('x-auth', token).send(user);
-        }
+    user.save().then(() => user.generateAuthToken()
+    ).then((token) => res.header('x-auth', token).send(user)
     ).catch((e) => res.status(400).send(e))
+});
+
+app.get('/user/me', authenticate, (req, res) => {
+    res.send(req.user);
 })
 
 app.listen(port, () => console.log(`server is running at port ${port}`))

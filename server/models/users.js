@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
     email: {
@@ -31,9 +32,7 @@ const UserSchema = new mongoose.Schema({
         }
     }]
 });
-
 //methods is an object where we define methods
-
 //for handling the output from api's
 UserSchema.methods.toJSON = function() {
     let user =this;
@@ -66,6 +65,21 @@ UserSchema.statics.getUserByToken = function(token) {
         'tokens.access': 'auth'
     })
 }
+
+//hashing the password
+UserSchema.pre('save', function(next) {
+    let user = this;
+    if(user.isModified('password')){
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            })
+        })
+    }else{
+        next();
+    }
+})
 
 const User = mongoose.model('Users', UserSchema);
 
